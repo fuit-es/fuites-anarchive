@@ -1,0 +1,3 @@
+[submodule "packages/compost"]
+	path = packages/compost
+	url = git@github.com:fuit-es/digital-compost.git
