@@ -14,12 +14,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/svvimming/fuites-anarchive.git"
+    "url": "git+https://github.com/fuit-es/fuites-anarchive.git"
   },
   "engines": {
     "node": ">=20.9.0"
   },
-  "homepage": "https://github.com/svvimming/fuites-anarchive#readme",
+  "homepage": "https://github.com/fuit-es/fuites-anarchive#readme",
   "workspaces": [
     "packages/be",
     "packages/fe"
