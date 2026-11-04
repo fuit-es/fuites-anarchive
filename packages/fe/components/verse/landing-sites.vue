@@ -2,7 +2,7 @@
   <div id="landing-site-anchor" ref="anchorRef">
     <!-- ========================================================== Dropdown -->
     <DropdownSelector
-      v-if="authenticated"
+      v-if="authenticated && !presentationMode"
       class="landing-sites-dropdown">
       <template #toggle-button="{ togglePanel, panelOpen }">
         <Tooltip
@@ -37,7 +37,7 @@
     </DropdownSelector>
     <!-- ======================================================= Lock Toggle -->
     <Tooltip
-      v-if="lockedThingies.length > 0"
+      v-if="lockedThingies.length > 0 && !presentationMode"
       tooltip="thingie-lock-toggle">
       <ButtonIcon
         class="lock-toggle"
@@ -70,7 +70,7 @@ const { audioContext } = storeToRefs(mixerStore)
 const pocketStore = usePocketStore()
 const { authenticated } = storeToRefs(pocketStore)
 const verseStore = useVerseStore()
-const { page } = storeToRefs(verseStore)
+const { verse, page } = storeToRefs(verseStore)
 const collectorStore = useCollectorStore()
 const { thingies } = storeToRefs(collectorStore)
 
@@ -86,6 +86,7 @@ onClickOutside(anchorRef, () => {
 // ==================================================================== Computed
 const landingSites = computed(() => siteData.value?.settings?.landingSites.filter(site => site.devices.includes(small.value ? 'mobile' : 'desktop')) || [])
 const lockedThingies = computed(() => thingies.value.data.filter(thingie => thingie.location === page.value.data?.name && thingie.locked))
+const presentationMode = computed(() => verse.value.data?.settings?.presentation && !authenticated.value)
 
 // ==================================================================== Watchers
 watch(() => activeModes.value.audio, (val) => {

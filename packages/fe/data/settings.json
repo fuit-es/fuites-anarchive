@@ -331,6 +331,12 @@
           "label": "Private",
           "description": "Turn on to hide the pages of this verse from view for anyone who doesn't have a token.",
           "type": "boolean"
+        },
+        {
+          "name": "presentation",
+          "label": "Presentation mode",
+          "description": "Turning on presentation mode will hide fuites' interface tools when viewing this verse without a token.",
+          "type": "boolean"
         }
       ]
     },

@@ -5,7 +5,7 @@
       :tooltip="tooltip"
       :drippy-scene="2"
       contact="top-left"
-      class="pocket-toggle-tooltip">
+      :class="['pocket-toggle-tooltip', { 'presentation-mode': presentationMode }]">
 
       <ButtonDashed
         :active="pocketOpen"
@@ -24,7 +24,7 @@
       
     </Tooltip>
 
-    <div :class="['pocket-container', { open: pocketOpen }, { fullscreen: small }]">
+    <div :class="['pocket-container', { open: pocketOpen }, { fullscreen: small }, { 'presentation-mode': presentationMode }]">
       <!-- ============================================= Background Elements -->
       <Turbulence instance-id="pocket-turbulence-bg" />
        <!-- ===================================================== Token Auth -->
@@ -88,6 +88,10 @@
 // ======================================================================= Props
 const props = defineProps({
   mobileDragTo: {
+    type: Boolean,
+    default: false
+  },
+  presentationMode: {
     type: Boolean,
     default: false
   }
@@ -170,6 +174,9 @@ onMounted(() => {
 // ///////////////////////////////////////////////////////////////////// General
 .pocket-toggle-tooltip {
   z-index: 1000000;
+  &.presentation-mode {
+    display: none;
+  }
 }
 
 .pocket-toggle-button {
@@ -251,6 +258,9 @@ onMounted(() => {
       background-color: rgba(#2C2E35, 0.8);
       border-radius: 0;
     }
+  }
+  &.presentation-mode {
+    visibility: hidden;
   }
 }
 

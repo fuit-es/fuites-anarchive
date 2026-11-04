@@ -2,6 +2,7 @@
   <div id="verse-metadata">
     <!-- --------------------------------------------------------- To Verses -->
     <Tooltip
+      v-if="!presentationMode"
       tooltip="pluriverse-link"
       contact="bottom-right"
       :drippy-scene="4"
@@ -31,9 +32,16 @@
 // ======================================================================== Data  
 const generalStore = useGeneralStore()
 const { mouseOverScene } = storeToRefs(generalStore)
+const pocketStore = usePocketStore()
+const { authenticated } = storeToRefs(pocketStore)
+const verseStore = useVerseStore()
+const { verse } = storeToRefs(verseStore)
 const destination = ref(false)
 const active = ref(false)
 const isLink = ref(false)
+
+// ==================================================================== Computed
+const presentationMode = computed(() => verse.value.data?.settings?.presentation && !authenticated.value)
 
 // ==================================================================== Watchers
 watch(mouseOverScene, val => {
