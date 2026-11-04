@@ -41,6 +41,8 @@ const config = useRuntimeConfig()
 const verseStore = useVerseStore()
 const { verse, page } = storeToRefs(verseStore)
 const generalStore = useGeneralStore()
+const pocketStore = usePocketStore()
+const { authenticated } = storeToRefs(pocketStore)
 const { baseUrl, portalEditing } = storeToRefs(generalStore)
 const alertStore = useZeroAlertStore()
 
@@ -181,7 +183,7 @@ const handleNavigate = async type => {
  */
 
 const handleDeleteManualPortal = () => {
-  if (portalEditing.value && props.portal.manual) {
+  if (authenticated.value && portalEditing.value && props.portal.manual) {
     verseStore.setPortalToDelete(props.portal._id)
     alertStore.openAlert('delete-portal-alert')
   }
