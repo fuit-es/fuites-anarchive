@@ -201,7 +201,6 @@ onMounted(() => {
   if (audioContext.value) { initSoundThingie() }
   setTimeout(() => {
     emit('loaded', true)
-    console.log(pathConfig.value)
   }, 200)
 })
 

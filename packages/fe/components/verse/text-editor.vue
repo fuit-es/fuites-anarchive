@@ -99,26 +99,28 @@ const innerStyles = computed(() => {
 // ==================================================================== Watchers
 watch(editing, (newId, oldId) => {
   if (oldId && oldId === id.value) {
-    const pushColor = !!colorSelectorHex.value.text && colors.value[colors.value.length - 1] !== colorSelectorHex.value.text
+    // get raw html string from the editor
     const text = textEditor.value.getHTML()
-    // If the new text thingie is empty OR if this thingie has been deleted, return and reset
-    if (text === '<p></p>' || deleted.value.includes(oldId)) {
-      resetEditor()
-      return
-    }
-    const oldThingie = thingies.value.data.find(item => item._id === oldId)
-    const at = small.value ?
-                    Object.assign({}, oldThingie.at, { width: rect.value.width, height: rect.value.height }) :
-                    Object.assign({}, rect.value, { rotation: rotation.value })
-    handleSubmit({
-      _id: id.value,
-      at,
-      text: text.replaceAll('<p></p>', '<p><br></p>'),
-      ...(pushColor && {
-        colors: colors.value.concat([colorSelectorHex.value.text])
+    // If the new text thingie is not empty OR deleted, initiate saving changes
+    if (text !== '<p></p>' && !deleted.value.includes(oldId)) {
+      const oldThingie = thingies.value.data.find(item => item._id === oldId)
+      const pushColor = !!colorSelectorHex.value.text && colors.value[colors.value.length - 1] !== colorSelectorHex.value.text
+      const at = small.value ?
+                      Object.assign({}, oldThingie.at, { width: rect.value.width, height: rect.value.height }) :
+                      Object.assign({}, rect.value, { rotation: rotation.value })
+      handleSubmit({
+        _id: id.value,
+        at,
+        text: text.replaceAll('<p></p>', '<p><br></p>'),
+        ...(pushColor && {
+          colors: colors.value.concat([colorSelectorHex.value.text])
+        })
       })
-    })
+    }
+    // reset the editor
+    resetEditor()
   }
+  // search for the new thingie and load it's contents into the editor
   const editingThingie = thingies.value.data.find(item => item._id === newId)
   if (editingThingie && editingThingie.thingie_type === 'text') {
     rect.value = small.value ? { x: 0, y: 0, width: window.innerWidth, height: 100, rotation: 0 } : { ...editingThingie.at }
@@ -150,7 +152,6 @@ const handleSubmit = async update => {
   } else {
     collectorStore.initThingieUpdate(update)
   }
-  resetEditor()
 }
 
 /**
