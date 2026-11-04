@@ -93,6 +93,11 @@ const VerseSchema = new Schema({
       type: Boolean,
       required: false,
       default: false
+    },
+    presentation: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   average_colors: {

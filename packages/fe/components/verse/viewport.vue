@@ -7,9 +7,9 @@
     <!-- ----------------------------------------------------- Landing Sites -->
     <VerseLandingSites />
     <!-- ------------------------------------------------------------ Pocket -->
-    <Pocket :mobile-drag-to="dragTo === 'pocket'" />
+    <Pocket :mobile-drag-to="dragTo === 'pocket'" :presentation-mode="presentationMode" />
     <!-- ---------------------------------------------------- Compost Portal -->
-    <CompostPortal v-if="!inCompost" :mobile-drag-to="dragTo === 'compost'" />
+    <CompostPortal v-if="!inCompost && !presentationMode" :mobile-drag-to="dragTo === 'compost'" />
     <!-- ---------------------------------------------------- Portal Creator -->
     <VersePortalCreator />
     <!-- ------------------------------------------------------- Text Editor -->
@@ -57,6 +57,8 @@ const generalStore = useGeneralStore()
 const { activeModes, small, portalEditing } = storeToRefs(generalStore)
 const pocketStore = usePocketStore()
 const { drippy, authenticated } = storeToRefs(pocketStore)
+const verseStore = useVerseStore()
+const { verse } = storeToRefs(verseStore)
 const alertStore = useZeroAlertStore()
 const viewport = ref(null)
 const touchmoveEventListener = ref(null)
@@ -66,6 +68,7 @@ const hideMobileTextEditor = ref(true)
 
 // ==================================================================== Computed
 const inCompost = computed(() => route.params.page === 'compost')
+const presentationMode = computed(() => verse.value.data?.settings?.presentation && !authenticated.value)
 
 // ==================================================================== Watchers
 watch(drippy, (scene) => {
