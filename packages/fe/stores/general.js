@@ -22,7 +22,8 @@ export const useGeneralStore = defineStore('general', () => {
     tooltips: false,
     record: false,
     mobileEdit: false,
-    externalLinks: true
+    externalLinks: true,
+    textResize: false
   })
 
   // ================================================================== Computed

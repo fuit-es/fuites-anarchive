@@ -1,5 +1,5 @@
 <template>
-  <button :class="['caddy-button', { selected }, { disabled: forceDisabled }]">
+  <button :class="['caddy-button', { selected }, { disabled: forceDisabled }, { toggle }]">
 
     <Tooltip :tooltip="`caddy-${props.tool}`" :contact="contacts[tool]">
 
@@ -43,6 +43,16 @@ const props = defineProps({
     type: Boolean,
     required: false,
     default: false
+  },
+  toggle: {
+    type: Boolean,
+    required: false,
+    default: false
+  },
+  active: {
+    type: Boolean,
+    required: false,
+    default: false
   }
 })
 
@@ -64,7 +74,7 @@ const contacts = {
 }
 
 // ==================================================================== Computed
-const recessed = computed(() => props.forcePressed || props.selected)
+const recessed = computed(() => props.forcePressed || (props.toggle ? props.active : props.selected))
 
 </script>
 
@@ -84,7 +94,7 @@ const recessed = computed(() => props.forcePressed || props.selected)
     visibility: hidden;
     opacity: 0;
   }
-  &:active {
+  &:active:not(.toggle) {
     .button-shadow.concave {
       opacity: 1;
     }
