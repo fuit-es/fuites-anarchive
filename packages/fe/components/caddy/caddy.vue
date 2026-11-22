@@ -53,6 +53,7 @@
         :style="getToolTransform(tool)"
         @clicked="handleToolClick(tool)">
         <IconFonts v-if="tool === 'font-editor'" class="icon" />
+        <IconTextResize v-if="tool === 'text-resize-toggle'" class="icon" />
         <IconColorPicker v-if="tool === 'color-selector'" class="icon" />
         <IconRotation v-if="tool === 'rotation'" class="icon" />
         <IconLayerOpacity v-if="tool === 'layer-opacity'" class="icon" />
@@ -116,6 +117,8 @@ defineProps({
 })
 
 // ======================================================================== Data
+const generalStore = useGeneralStore()
+const { activeModes } = storeToRefs(generalStore)
 const collectorStore = useCollectorStore()
 const { thingies, editing } = storeToRefs(collectorStore)
 const pocketStore = usePocketStore()
@@ -139,7 +142,8 @@ const textTools = [
   'layer-opacity',
   'rotation',
   'font-editor',
-  'color-selector'
+  'color-selector',
+  'text-resize-toggle'
 ]
 const soundTools = [
   'layer-opacity',
@@ -155,6 +159,7 @@ const radii = {
   'resize': 86,
   'clip-toggle': 60,
   'font-editor': 90,
+  'text-resize-toggle': 60,
   'color-selector': 90,
   'volume': 86
 }
@@ -166,7 +171,8 @@ const positions = ref({
   'clip-toggle': 4,
   'font-editor': 3,
   'color-selector': 4,
-  'volume': 5
+  'volume': 5,
+  'text-resize-toggle': 5
 })
 
 // ==================================================================== Computed
@@ -215,6 +221,8 @@ const handleToolClick = tool => {
   if (tool === 'handle' && dragging.value) { return }
   if (tool === 'clip-toggle') {
     toggleImageClip()
+  } else if (tool === 'text-resize-toggle') {
+    toggleTextResize()
   } else {
     positions.value[selected.value] = positions.value[tool]
     positions.value[tool] = 0
@@ -324,6 +332,16 @@ const toggleImageClip = () => {
 }
 
 /**
+ * @method toggleTextResize
+ */
+
+const toggleTextResize = () => {
+  if (thingie.value) {
+    generalStore.setMode('textResize', !activeModes.value.textResize)
+  }
+}
+
+/**
  * @method handleGainUpdate
  */
 
@@ -374,7 +392,8 @@ const resetPositions = () => {
     'clip-toggle': 4,
     'font-editor': 3,
     'color-selector': 4,
-    'volume': 5
+    'volume': 5,
+    'text-resize-toggle': 5
   }
 }
 
