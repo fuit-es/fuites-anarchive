@@ -49,6 +49,8 @@
         :key="`${tool}-button`"
         :tool="tool"
         :selected="selected === tool"
+        :toggle="['text-resize-toggle', 'clip-toggle'].includes(tool)"
+        :active="getToggleButtonState(tool, activeModes.textResize, clipPressed ?? thingie?.clip)"
         :class="['caddy-tool-button', 'z-index-2']"
         :style="getToolTransform(tool)"
         @clicked="handleToolClick(tool)">
@@ -132,6 +134,9 @@ const initAngle = ref(0)
 const dragging = ref(false)
 const handle = ref(null)
 const selected = ref('handle')
+// Clip is confirmed by the server. This keeps the scissors button in the
+// state the user just chose until that confirmation arrives.
+const clipPressed = ref(null)
 const imageTools = [
   'layer-opacity',
   'rotation',
@@ -187,6 +192,12 @@ const caddyStyles = computed(() => ({ '--center-panel-diameter': `${2 * (radii[s
 const newTextThingie = computed(() => editing.value === 'new-text-thingie')
 
 // ==================================================================== Watchers
+// Sets clipPressed to null when a clip state change comes in from the server.
+watch(() => thingie.value?.clip, (clip) => {
+  if (clipPressed.value === null) { return }
+  if (!!clip === clipPressed.value) { clipPressed.value = null }
+})
+
 watch(() => thingie.value?._id, (newId, oldId) => {
   // Update closed sound thingie with saved hex color
   if (oldId && soundThingieData.value._id === oldId && colorSelectorHex.value.sound) {
@@ -206,6 +217,7 @@ watch(() => thingie.value?._id, (newId, oldId) => {
     }
   }
   if (newId) {
+    clipPressed.value = null
     initAngle.value = thingie.value.at.rotation
     handleToolClick('handle')
     resetPositions()
@@ -327,7 +339,9 @@ const updateOpacity = val => {
 
 const toggleImageClip = () => {
   if (thingie.value) {
-    update({ clip: !thingie.value.clip })
+    const next = !(clipPressed.value ?? thingie.value.clip)
+    clipPressed.value = next
+    update({ clip: next })
   }
 }
 
@@ -339,6 +353,16 @@ const toggleTextResize = () => {
   if (thingie.value) {
     generalStore.setMode('textResize', !activeModes.value.textResize)
   }
+}
+
+/**
+ * @method getToggleButtonState
+ */
+
+const getToggleButtonState = (tool, textResize, clip) => {
+  if (tool === 'text-resize-toggle') { return textResize }
+  if (tool === 'clip-toggle') { return !!clip }
+  return false
 }
 
 /**
