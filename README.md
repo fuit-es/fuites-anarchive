@@ -12,8 +12,26 @@ The repo uses npm workspaces. Packages are divided up into a backend application
 2. Make sure to have installed and be using Node.js 20.9 or higher.
 3. Configure a self-signed certificate for local HTTPS support (see the section below on how to do this).
 4. Add .env files to both the `packages/be` directory and the `packages/fe` directory (email contact@fuit.es to get these files)
-5. from the repo root run `npm ci` and then run `npm run be:dev`
-6. In a second terminal (or command line) window, from the repo root run `npm run fe:dev`
+5. Open an SSH tunnel to the database (see the section below on how to do this).
+6. from the repo root run `npm ci` and then run `npm run be:dev`
+7. In a second terminal (or command line) window, from the repo root run `npm run fe:dev`
+
+
+## Database access
+
+MongoDB runs on the droplet and listens on `127.0.0.1` only, so it accepts connections from the droplet itself and is not reachable over the internet. Local development reaches the development database through an SSH tunnel.
+
+Add the following to `~/.ssh/config`, filling in the host, port and user from the credentials sent with the .env files:
+
+    Host fuites-db-tunnel
+      HostName <droplet-ip>
+      Port <ssh-port>
+      User <ssh-user>
+      LocalForward 27017 127.0.0.1:27017
+      ExitOnForwardFailure yes
+      ServerAliveInterval 60
+
+Then run `ssh -N fuites-db-tunnel` in its own terminal window and leave it open while developing. `DATABASE_URL` in `packages/be/.env` points at `127.0.0.1:27017`, which the tunnel forwards to the droplet. A `MongooseServerSelectionError: connect ECONNREFUSED` on startup usually means the tunnel is not running.
 
 
 ## Self-signed certificate
