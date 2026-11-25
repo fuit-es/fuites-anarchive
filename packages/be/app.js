@@ -4,6 +4,7 @@ console.log('🖥️  [app] initialization')
 // -----------------------------------------------------------------------------
 const ModuleAlias = require('module-alias')
 const Helmet = require('helmet')
+const Cors = require('cors')
 const Fs = require('fs-extra')
 const Express = require('express')
 require('dotenv').config()
@@ -65,6 +66,15 @@ MC.app.use(Helmet({
   contentSecurityPolicy: process.env.SERVER_ENV !== 'development' ? undefined : false,
   crossOriginResourcePolicy: false
 }))
+
+// /////////////////////////////////////////////////// Add CORS response headers
+// -----------------------------------------------------------------------------
+/*
+ * Must be registered before the static mounts below. Express.static terminates
+ * the request it matches, so a CORS middleware added later (in liftoff) never
+ * runs for media and the response comes back without Access-Control-Allow-Origin
+*/
+MC.app.use(Cors(MC.cors))
 
 // //////////////////////////////////////////////////// Serve static directories
 // -----------------------------------------------------------------------------

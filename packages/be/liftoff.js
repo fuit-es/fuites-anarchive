@@ -3,7 +3,6 @@ console.log('🚀️ [app] liftoff')
 // ///////////////////////////////////////////////////////////////////// Imports
 // -----------------------------------------------------------------------------
 // ///////////////////////////////////////////////////////////////////// General
-const Cors = require('cors')
 const BodyParser = require('body-parser')
 const ExpressSession = require('express-session')
 const ConnectMongoStore = require('connect-mongo')
@@ -11,10 +10,6 @@ const Fs = require('fs-extra')
 require('mongoose')
 
 const MC = require('@Root/config')
-
-// /////////////////////////////////////////////////// Add CORS response headers
-// -----------------------------------------------------------------------------
-MC.app.use(Cors(MC.cors))
 
 // ////////////////////////////////////////////////////// Initialize Body Parser
 // -----------------------------------------------------------------------------
